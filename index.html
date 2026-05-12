@@ -1,0 +1,816 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Bright Smile Dental Clinic</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet"/>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --teal:#0d9488;--teal-light:#f0fdfa;--teal-dark:#0f766e;--teal-xlight:#e6faf8;
+  --text:#1c1917;--text2:#57534e;--text3:#a8a29e;
+  --bg:#f1f5f4;--card:#fff;--border:#e2e8e7;
+  --red:#dc2626;--amber:#d97706;--green:#16a34a;
+  --shadow:0 1px 4px rgba(0,0,0,.07),0 1px 2px rgba(0,0,0,.05);
+  --shadow-lg:0 12px 32px rgba(0,0,0,.12);
+}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+.app{display:flex;min-height:100vh}
+.sidebar{width:230px;background:linear-gradient(160deg,#0f766e,#134e4a);display:flex;flex-direction:column;position:fixed;top:0;left:0;height:100vh;z-index:100}
+.main{margin-left:230px;flex:1;padding:32px 36px;min-height:100vh}
+.sidebar-logo{padding:28px 22px 22px;border-bottom:1px solid rgba(255,255,255,.12)}
+.sidebar-logo .tooth{font-size:28px;margin-bottom:6px}
+.sidebar-logo h1{font-family:'Playfair Display',serif;font-size:17px;color:#fff;line-height:1.3}
+.sidebar-logo span{font-size:11px;color:rgba(255,255,255,.5);letter-spacing:.08em;text-transform:uppercase}
+.sidebar-nav{padding:14px 10px;flex:1}
+.nav-item{display:flex;align-items:center;gap:11px;padding:11px 14px;border-radius:10px;cursor:pointer;font-size:14px;font-weight:500;color:rgba(255,255,255,.65);transition:.15s;margin-bottom:3px;border:none;background:none;width:100%;text-align:left}
+.nav-item:hover{background:rgba(255,255,255,.1);color:#fff}
+.nav-item.active{background:rgba(255,255,255,.15);color:#fff;font-weight:600}
+.nav-item svg{width:17px;height:17px;flex-shrink:0}
+.sidebar-footer{padding:18px 22px;border-top:1px solid rgba(255,255,255,.1);font-size:11px;color:rgba(255,255,255,.35)}
+.page{display:none}.page.active{display:block}
+.page-header{margin-bottom:28px;display:flex;justify-content:space-between;align-items:flex-start}
+.page-header h2{font-family:'Playfair Display',serif;font-size:24px;color:var(--text);margin-bottom:3px}
+.page-header p{font-size:13px;color:var(--text3)}
+.card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:22px;box-shadow:var(--shadow)}
+.stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:26px}
+.stat-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:18px 20px;box-shadow:var(--shadow)}
+.stat-label{font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.07em;margin-bottom:8px}
+.stat-value{font-size:26px;font-weight:700;color:var(--text);line-height:1}
+.stat-value.teal{color:var(--teal-dark)}.stat-value.red{color:var(--red)}
+.btn{display:inline-flex;align-items:center;gap:7px;padding:10px 18px;border-radius:9px;font-size:14px;font-weight:500;cursor:pointer;border:none;transition:.15s;font-family:inherit;line-height:1}
+.btn-primary{background:var(--teal);color:#fff}.btn-primary:hover{background:var(--teal-dark)}
+.btn-outline{background:#fff;color:var(--text);border:1px solid var(--border)}.btn-outline:hover{border-color:var(--teal);color:var(--teal)}
+.btn-sm{padding:7px 13px;font-size:13px}
+.btn-group{display:flex;gap:10px;margin-bottom:22px}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.form-group{display:flex;flex-direction:column;gap:5px}
+.form-group.full{grid-column:1/-1}
+label{font-size:12px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.04em}
+input,select,textarea{padding:10px 13px;border:1.5px solid var(--border);border-radius:9px;font-size:14px;font-family:inherit;color:var(--text);background:#fff;transition:.15s;outline:none}
+input:focus,select:focus,textarea:focus{border-color:var(--teal);box-shadow:0 0 0 3px rgba(13,148,136,.1)}
+textarea{resize:vertical;min-height:70px}
+.form-section{font-size:11px;font-weight:700;color:var(--teal-dark);text-transform:uppercase;letter-spacing:.07em;padding:14px 0 6px;border-bottom:1px solid var(--teal-xlight);margin-bottom:2px;grid-column:1/-1}
+.table-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:13.5px}
+th{text-align:left;padding:11px 14px;font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.05em;border-bottom:2px solid var(--border);background:#fafafa}
+td{padding:11px 14px;border-bottom:1px solid var(--border);vertical-align:middle}
+tr:last-child td{border-bottom:none}
+tbody tr:hover td{background:var(--teal-xlight)}
+.badge{display:inline-flex;align-items:center;padding:3px 10px;border-radius:20px;font-size:11.5px;font-weight:600}
+.badge-green{background:#dcfce7;color:#15803d}
+.badge-amber{background:#fef9c3;color:#92400e}
+.badge-red{background:#fee2e2;color:#b91c1c}
+.badge-blue{background:#dbeafe;color:#1d4ed8}
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:200;align-items:center;justify-content:center;padding:20px}
+.modal-overlay.open{display:flex}
+.modal{background:#fff;border-radius:18px;padding:28px;width:100%;max-width:600px;max-height:92vh;overflow-y:auto;box-shadow:var(--shadow-lg)}
+.modal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:22px;padding-bottom:14px;border-bottom:1px solid var(--border)}
+.modal-header h3{font-family:'Playfair Display',serif;font-size:19px;color:var(--text)}
+.modal-close{background:none;border:none;cursor:pointer;color:var(--text3);font-size:24px;line-height:1;padding:0 4px}.modal-close:hover{color:var(--red)}
+.modal-footer{display:flex;gap:10px;justify-content:flex-end;margin-top:22px;padding-top:16px;border-top:1px solid var(--border)}
+.treatment-add-row{display:flex;gap:8px;margin-bottom:10px;align-items:center}
+.treatment-item{display:flex;align-items:center;gap:10px;padding:9px 13px;background:var(--teal-xlight);border:1px solid #b2e8e2;border-radius:9px;margin-bottom:6px;font-size:13px}
+.treatment-item .t-name{flex:1;font-weight:500}
+.treatment-item .t-qty{background:#fff;border:1px solid var(--border);border-radius:6px;padding:3px 8px;width:52px;font-size:13px;text-align:center}
+.treatment-item .t-price{font-weight:700;color:var(--teal-dark);min-width:72px;text-align:right}
+.remove-btn{background:none;border:none;cursor:pointer;color:var(--text3);font-size:18px;line-height:1}.remove-btn:hover{color:var(--red)}
+.search-wrap{position:relative}
+.search-wrap input{padding-left:38px;width:100%;max-width:340px}
+.search-wrap svg{position:absolute;left:11px;top:50%;transform:translateY(-50%);color:var(--text3);pointer-events:none}
+.empty{text-align:center;padding:44px;color:var(--text3)}.empty p{font-size:14px}
+.section-title{font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.07em;margin:18px 0 10px}
+.report-row{display:flex;justify-content:space-between;align-items:center;padding:11px 0;border-bottom:1px solid var(--border)}
+.report-row:last-child{border-bottom:none}
+.mode-dot{width:10px;height:10px;border-radius:50%;display:inline-block;margin-right:8px}
+
+/* ══ CLINIC RECEIPT ══ */
+.receipt{width:100%;max-width:480px;margin:0 auto;background:#fff;border:2px solid #0f766e;border-radius:4px;box-shadow:4px 4px 0 #b2e8e2,inset 0 0 0 6px #fff,inset 0 0 0 8px rgba(13,148,136,.08);position:relative;overflow:hidden}
+.receipt::before{content:'';position:absolute;top:0;left:0;right:0;height:6px;background:repeating-linear-gradient(90deg,#0d9488 0,#0d9488 8px,transparent 8px,transparent 14px)}
+.receipt::after{content:'BRIGHT SMILE';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%) rotate(-30deg);font-family:'Playfair Display',serif;font-size:52px;font-weight:700;color:rgba(13,148,136,.04);letter-spacing:.1em;pointer-events:none;white-space:nowrap}
+.receipt-inner{padding:28px 28px 22px}
+.receipt-clinic-name{font-family:'Playfair Display',serif;font-size:22px;font-weight:700;color:#0f766e;text-align:center;letter-spacing:.02em;margin-bottom:3px}
+.receipt-clinic-sub{text-align:center;font-size:11.5px;color:#57534e;margin-bottom:2px}
+.receipt-clinic-contact{text-align:center;font-size:11px;color:#a8a29e;margin-bottom:2px}
+.receipt-divider{border:none;border-top:1px dashed #b2e8e2;margin:12px 0}
+.receipt-divider-solid{border:none;border-top:2px solid #0f766e;margin:14px 0}
+.receipt-divider-double{border:none;border-top:3px double #0f766e;margin:14px 0}
+.receipt-meta{display:flex;justify-content:space-between;margin-bottom:12px;font-size:12px;color:#57534e}
+.receipt-meta strong{color:#1c1917;display:block;font-size:13px}
+.receipt-meta-right{text-align:right}
+.receipt-patient-box{background:#f0fdfa;border:1px solid #b2e8e2;border-radius:6px;padding:11px 14px;margin-bottom:14px;font-size:12.5px}
+.receipt-patient-box .label{font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:#0f766e;margin-bottom:6px}
+.receipt-patient-grid{display:grid;grid-template-columns:1fr 1fr;gap:4px 16px;font-size:12.5px}
+.receipt-patient-grid span{color:#57534e}.receipt-patient-grid strong{color:#1c1917}
+.receipt-items-header{display:flex;font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:#a8a29e;padding:0 0 6px;border-bottom:1px solid #e2e8e7}
+.receipt-item{display:flex;align-items:flex-start;padding:7px 0;border-bottom:1px dashed #e2e8e7;font-size:13px}
+.receipt-item:last-child{border-bottom:none}
+.receipt-item-name{flex:1;font-weight:500}
+.receipt-item-qty{width:36px;text-align:center;color:#a8a29e;font-size:12px}
+.receipt-item-unit{width:80px;text-align:right;color:#a8a29e;font-size:12px}
+.receipt-item-price{width:90px;text-align:right;font-weight:600}
+.receipt-subtotals{font-size:13px}
+.receipt-subtotal-row{display:flex;justify-content:space-between;padding:5px 0;color:#57534e}
+.receipt-grand-total{display:flex;justify-content:space-between;align-items:center;padding:10px 16px;margin-top:10px;background:#0f766e;border-radius:6px;color:#fff;font-size:17px;font-weight:700}
+.receipt-payment-row{display:flex;justify-content:space-between;padding:5px 0;font-size:13px;color:#57534e}
+.receipt-balance{display:flex;justify-content:space-between;padding:9px 16px;margin-top:8px;border-radius:6px;font-size:14px;font-weight:700}
+.receipt-balance.paid{background:#dcfce7;color:#15803d}
+.receipt-balance.due{background:#fee2e2;color:#b91c1c}
+.receipt-balance.partial{background:#fef9c3;color:#92400e}
+.receipt-status-stamp{position:absolute;top:22px;right:18px;border:3px solid currentColor;border-radius:4px;padding:4px 10px;font-size:13px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;transform:rotate(8deg);opacity:.6;pointer-events:none}
+.receipt-status-stamp.paid{color:#15803d}
+.receipt-status-stamp.due{color:#b91c1c}
+.receipt-status-stamp.partial{color:#92400e}
+.receipt-footer{text-align:center;font-size:11px;color:#a8a29e;margin-top:14px;padding-top:10px;border-top:1px dashed #b2e8e2;line-height:1.8}
+
+@media print{
+  .sidebar,.btn,.modal-overlay,.no-print{display:none!important}
+  .main{margin:0;padding:0}
+  .receipt{box-shadow:none}
+}
+</style>
+</head>
+<body>
+<div class="app">
+
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <div class="tooth">🦷</div>
+    <h1>Bright Smile</h1>
+    <span>Dental Clinic</span>
+  </div>
+  <nav class="sidebar-nav">
+    <button class="nav-item active" onclick="showPage('dashboard',this)">
+      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>Dashboard
+    </button>
+    <button class="nav-item" onclick="showPage('patients',this)">
+      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>Patients
+    </button>
+    <button class="nav-item" onclick="showPage('bills',this)">
+      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>Bills
+    </button>
+    <button class="nav-item" onclick="showPage('report',this)">
+      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>Reports
+    </button>
+  </nav>
+  <div class="sidebar-footer">v2.0 · Bright Smile</div>
+</aside>
+
+<main class="main">
+
+<!-- DASHBOARD -->
+<div id="page-dashboard" class="page active">
+  <div class="page-header">
+    <div><h2>Good day! 👋</h2><p id="today-date"></p></div>
+    <div style="display:flex;gap:10px">
+      <button class="btn btn-outline" onclick="openModal('modal-patient')">＋ Patient</button>
+      <button class="btn btn-primary" onclick="openModal('modal-visit')">＋ New Visit</button>
+    </div>
+  </div>
+  <div class="stat-grid">
+    <div class="stat-card"><div class="stat-label">Today Collected</div><div class="stat-value teal" id="stat-collections">₹0</div></div>
+    <div class="stat-card"><div class="stat-label">Patients Today</div><div class="stat-value" id="stat-patients">0</div></div>
+    <div class="stat-card"><div class="stat-label">Bills Today</div><div class="stat-value" id="stat-bills">0</div></div>
+    <div class="stat-card"><div class="stat-label">Total Outstanding</div><div class="stat-value red" id="stat-outstanding">₹0</div></div>
+  </div>
+  <div class="card">
+    <div class="section-title">Recent Bills</div>
+    <div class="table-wrap"><table>
+      <thead><tr><th>Bill #</th><th>Patient</th><th>Total</th><th>Paid</th><th>Status</th><th>Date</th><th></th></tr></thead>
+      <tbody id="dash-bills-body"></tbody>
+    </table></div>
+  </div>
+</div>
+
+<!-- PATIENTS -->
+<div id="page-patients" class="page">
+  <div class="page-header">
+    <div><h2>Patients</h2><p>All registered patients</p></div>
+    <button class="btn btn-primary" onclick="openModal('modal-patient')">＋ Add Patient</button>
+  </div>
+  <div class="card">
+    <div style="margin-bottom:14px"><div class="search-wrap">
+      <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" placeholder="Search by name, phone or Patient ID…" oninput="renderPatients(this.value)"/>
+    </div></div>
+    <div class="table-wrap"><table>
+      <thead><tr><th>Patient ID</th><th>Name</th><th>Phone</th><th>Age / Gender</th><th>Blood Group</th><th>Visits</th><th></th></tr></thead>
+      <tbody id="patients-body"></tbody>
+    </table></div>
+  </div>
+</div>
+
+<!-- BILLS -->
+<div id="page-bills" class="page">
+  <div class="page-header">
+    <div><h2>Bills</h2><p>All patient invoices</p></div>
+    <button class="btn btn-primary" onclick="openModal('modal-visit')">＋ New Visit</button>
+  </div>
+  <div class="card">
+    <div style="margin-bottom:14px"><div class="search-wrap">
+      <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" placeholder="Search by patient or bill number…" oninput="renderBills(this.value)"/>
+    </div></div>
+    <div class="table-wrap"><table>
+      <thead><tr><th>Bill #</th><th>Patient</th><th>Treatments</th><th>Total</th><th>Paid</th><th>Balance</th><th>Mode</th><th>Status</th><th>Date</th><th>Actions</th></tr></thead>
+      <tbody id="bills-body"></tbody>
+    </table></div>
+  </div>
+</div>
+
+<!-- REPORT -->
+<div id="page-report" class="page">
+  <div class="page-header">
+    <div><h2>Daily Report</h2><p>Revenue & collection summary</p></div>
+    <div style="display:flex;gap:10px;align-items:center">
+      <input type="date" id="report-date" onchange="renderReport()" style="padding:9px 12px;border:1.5px solid var(--border);border-radius:9px;font-family:inherit;font-size:14px"/>
+      <button class="btn btn-outline btn-sm no-print" onclick="window.print()">🖨 Print</button>
+    </div>
+  </div>
+  <div class="stat-grid" id="report-stats"></div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:4px">
+    <div class="card"><div class="section-title">Payment Mode Breakdown</div><div id="report-breakdown"></div></div>
+    <div class="card"><div class="section-title">Bill Status Summary</div><div id="report-status"></div></div>
+  </div>
+  <div class="card" style="margin-top:16px">
+    <div class="section-title">All bills on this date</div>
+    <div class="table-wrap"><table>
+      <thead><tr><th>Bill #</th><th>Patient</th><th>Doctor</th><th>Total</th><th>Paid</th><th>Balance</th><th>Status</th></tr></thead>
+      <tbody id="report-bills"></tbody>
+    </table></div>
+  </div>
+</div>
+
+</main>
+</div>
+
+<!-- MODAL: Add Patient -->
+<div class="modal-overlay" id="modal-patient">
+  <div class="modal">
+    <div class="modal-header"><h3>Register Patient</h3><button class="modal-close" onclick="closeModal('modal-patient')">×</button></div>
+    <div class="form-grid">
+      <div class="form-section">Personal Information</div>
+      <div class="form-group"><label>Full Name *</label><input id="p-name" placeholder="e.g. Rahul Sharma"/></div>
+      <div class="form-group"><label>Phone Number *</label><input id="p-phone" placeholder="10-digit mobile"/></div>
+      <div class="form-group"><label>Age</label><input id="p-age" type="number" placeholder="25"/></div>
+      <div class="form-group"><label>Gender</label>
+        <select id="p-gender"><option value="">Select</option><option>Male</option><option>Female</option><option>Other</option></select>
+      </div>
+      <div class="form-group"><label>Date of Birth</label><input id="p-dob" type="date"/></div>
+      <div class="form-group"><label>Blood Group</label>
+        <select id="p-blood"><option value="">Unknown</option><option>A+</option><option>A-</option><option>B+</option><option>B-</option><option>O+</option><option>O-</option><option>AB+</option><option>AB-</option></select>
+      </div>
+      <div class="form-group full"><label>Address</label><input id="p-address" placeholder="House no, Street, Area, City"/></div>
+      <div class="form-group"><label>Email</label><input id="p-email" placeholder="example@email.com"/></div>
+      <div class="form-group"><label>Emergency Contact</label><input id="p-emergency" placeholder="Name & Phone"/></div>
+      <div class="form-section">Medical Information</div>
+      <div class="form-group full"><label>Known Allergies</label><input id="p-allergies" placeholder="e.g. Penicillin, Latex — or None"/></div>
+      <div class="form-group full"><label>Medical History / Conditions</label><textarea id="p-history" placeholder="Diabetes, BP, Heart issues, previous dental work…"></textarea></div>
+      <div class="form-group"><label>Current Medications</label><input id="p-medications" placeholder="e.g. Metformin 500mg"/></div>
+      <div class="form-group"><label>Last Dental Visit</label><input id="p-lastvisit" type="date"/></div>
+      <div class="form-group full"><label>Notes</label><textarea id="p-notes" placeholder="Any additional notes…" style="min-height:52px"></textarea></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeModal('modal-patient')">Cancel</button>
+      <button class="btn btn-primary" onclick="savePatient()">Save Patient</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: New Visit -->
+<div class="modal-overlay" id="modal-visit">
+  <div class="modal" style="max-width:660px">
+    <div class="modal-header"><h3>New Visit &amp; Bill</h3><button class="modal-close" onclick="closeModal('modal-visit')">×</button></div>
+    <div class="form-grid">
+      <div class="form-section">Visit Details</div>
+      <div class="form-group full"><label>Patient *</label><select id="v-patient"><option value="">— Select Patient —</option></select></div>
+      <div class="form-group"><label>Doctor / Dentist</label><input id="v-doctor" placeholder="Dr. Name"/></div>
+      <div class="form-group"><label>Visit Date</label><input type="date" id="v-date"/></div>
+      <div class="form-group"><label>Chief Complaint</label><input id="v-complaint" placeholder="e.g. Toothache, Routine checkup"/></div>
+      <div class="form-group"><label>Visit Notes</label><input id="v-notes" placeholder="Diagnosis, observations…"/></div>
+    </div>
+    <div class="section-title" style="margin-top:14px">Treatments &amp; Services</div>
+    <div class="treatment-add-row">
+      <select id="v-treatment-select" style="flex:2">
+        <option value="">— Select treatment —</option>
+        <optgroup label="General"><option value="Consultation|200">Consultation — ₹200</option><option value="Teeth Cleaning|500">Teeth Cleaning — ₹500</option><option value="X-Ray (Single)|300">X-Ray (Single) — ₹300</option><option value="X-Ray (Full Mouth)|800">X-Ray (Full Mouth) — ₹800</option></optgroup>
+        <optgroup label="Restorative"><option value="Filling (Silver)|700">Filling (Silver) — ₹700</option><option value="Filling (Composite)|900">Filling (Composite) — ₹900</option><option value="Inlay / Onlay|2500">Inlay / Onlay — ₹2500</option></optgroup>
+        <optgroup label="Surgical"><option value="Extraction (Simple)|800">Extraction (Simple) — ₹800</option><option value="Extraction (Surgical)|1500">Extraction (Surgical) — ₹1500</option><option value="Root Canal (Single)|3500">Root Canal (Single) — ₹3500</option><option value="Root Canal (Molar)|5000">Root Canal (Molar) — ₹5000</option></optgroup>
+        <optgroup label="Cosmetic"><option value="Teeth Whitening|3000">Teeth Whitening — ₹3000</option><option value="Scaling &amp; Polishing|1000">Scaling &amp; Polishing — ₹1000</option><option value="Veneer (per tooth)|6000">Veneer (per tooth) — ₹6000</option></optgroup>
+        <optgroup label="Prosthetics"><option value="Crown (Metal)|4000">Crown (Metal) — ₹4000</option><option value="Crown (Ceramic)|7000">Crown (Ceramic) — ₹7000</option><option value="Denture (Full)|15000">Denture (Full) — ₹15000</option><option value="Denture (Partial)|8000">Denture (Partial) — ₹8000</option><option value="Implant|25000">Implant — ₹25000</option><option value="Bridge (per unit)|5000">Bridge (per unit) — ₹5000</option></optgroup>
+        <optgroup label="Orthodontics"><option value="Braces (Metal)|25000">Braces (Metal) — ₹25000</option><option value="Braces (Ceramic)|35000">Braces (Ceramic) — ₹35000</option><option value="Retainer|3000">Retainer — ₹3000</option></optgroup>
+        <option value="custom">＋ Custom treatment…</option>
+      </select>
+      <input id="v-qty" type="number" value="1" min="1" style="width:65px;text-align:center" title="Quantity"/>
+      <button class="btn btn-outline btn-sm" onclick="addTreatment()">Add</button>
+    </div>
+    <div id="custom-treatment-row" style="display:none;gap:8px;margin-bottom:10px">
+      <input id="v-custom-name" placeholder="Treatment name" style="flex:2"/>
+      <input id="v-custom-price" type="number" placeholder="Price ₹" style="width:120px"/>
+    </div>
+    <div id="v-treatment-items"></div>
+    <div style="text-align:right;font-size:13px;color:var(--text3);margin-top:4px">Subtotal: <strong id="v-subtotal" style="color:var(--text)">₹0</strong></div>
+    <div class="form-grid" style="margin-top:16px">
+      <div class="form-section">Payment Details</div>
+      <div class="form-group"><label>Payment Mode</label>
+        <select id="v-payment-mode"><option>Cash</option><option>UPI / GPay / PhonePe</option><option>Debit Card</option><option>Credit Card</option><option>Net Banking</option><option>Insurance</option><option>Cheque</option></select>
+      </div>
+      <div class="form-group"><label>Reference / UPI ID / Cheque No.</label><input id="v-ref" placeholder="Optional"/></div>
+      <div class="form-group"><label>Amount Paid Now (₹)</label><input type="number" id="v-paid" placeholder="0" oninput="updateBillPreview()"/></div>
+      <div class="form-group"><label>Discount (₹)</label><input type="number" id="v-discount" placeholder="0" oninput="updateBillPreview()"/></div>
+    </div>
+    <div style="margin-top:14px;background:#f8fffe;border:1px solid #b2e8e2;border-radius:10px;padding:14px;font-size:13px">
+      <div style="display:flex;justify-content:space-between;color:var(--text2);margin-bottom:4px"><span>Subtotal</span><span id="vs-sub">₹0</span></div>
+      <div style="display:flex;justify-content:space-between;color:var(--amber);margin-bottom:4px"><span>Discount</span><span id="vs-disc">— ₹0</span></div>
+      <div style="display:flex;justify-content:space-between;font-weight:700;font-size:15px;color:var(--teal-dark);border-top:1px solid #b2e8e2;padding-top:8px;margin-bottom:6px"><span>Grand Total</span><span id="vs-total">₹0</span></div>
+      <div style="display:flex;justify-content:space-between;color:var(--green)"><span>Paid Now</span><span id="vs-paid">₹0</span></div>
+      <div style="display:flex;justify-content:space-between;font-weight:600;color:var(--red)"><span>Balance Due</span><span id="vs-bal">₹0</span></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeModal('modal-visit')">Cancel</button>
+      <button class="btn btn-primary" onclick="saveBill()">💾 Save &amp; Generate Bill</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: View Bill -->
+<div class="modal-overlay" id="modal-bill-view">
+  <div class="modal" style="max-width:520px">
+    <div class="modal-header"><h3>Bill Receipt</h3><button class="modal-close" onclick="closeModal('modal-bill-view')">×</button></div>
+    <div id="bill-view-content"></div>
+    <div class="modal-footer no-print">
+      <button class="btn btn-outline" onclick="closeModal('modal-bill-view')">Close</button>
+      <button class="btn btn-primary" onclick="printBill()">🖨 Print Bill</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: Payment -->
+<div class="modal-overlay" id="modal-payment">
+  <div class="modal" style="max-width:420px">
+    <div class="modal-header"><h3>Record Payment</h3><button class="modal-close" onclick="closeModal('modal-payment')">×</button></div>
+    <div id="payment-bill-info" style="background:var(--teal-xlight);border:1px solid #b2e8e2;border-radius:10px;padding:14px;margin-bottom:18px;font-size:13px"></div>
+    <div class="form-grid">
+      <div class="form-group"><label>Payment Mode</label>
+        <select id="pay-mode"><option>Cash</option><option>UPI / GPay / PhonePe</option><option>Debit Card</option><option>Credit Card</option><option>Net Banking</option><option>Insurance</option><option>Cheque</option></select>
+      </div>
+      <div class="form-group"><label>Amount (₹)</label><input type="number" id="pay-amount" placeholder="0"/></div>
+      <div class="form-group full"><label>Reference / Transaction ID</label><input id="pay-ref" placeholder="UPI ref, cheque no. (optional)"/></div>
+      <div class="form-group full"><label>Remarks</label><input id="pay-remarks" placeholder="Optional"/></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeModal('modal-payment')">Cancel</button>
+      <button class="btn btn-primary" onclick="savePayment()">✓ Record Payment</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: Patient View -->
+<div class="modal-overlay" id="modal-patient-view">
+  <div class="modal" style="max-width:640px">
+    <div class="modal-header"><h3 id="pv-title">Patient Profile</h3><button class="modal-close" onclick="closeModal('modal-patient-view')">×</button></div>
+    <div id="pv-content"></div>
+    <div class="modal-footer"><button class="btn btn-outline" onclick="closeModal('modal-patient-view')">Close</button></div>
+  </div>
+</div>
+
+<script>
+const DB={
+  get patients(){return JSON.parse(localStorage.getItem('bs2_patients')||'[]')},
+  set patients(v){localStorage.setItem('bs2_patients',JSON.stringify(v))},
+  get bills(){return JSON.parse(localStorage.getItem('bs2_bills')||'[]')},
+  set bills(v){localStorage.setItem('bs2_bills',JSON.stringify(v))},
+};
+let currentPayBillId=null,currentTreatments=[];
+const fmt=n=>'₹'+Number(n||0).toLocaleString('en-IN');
+const today=()=>new Date().toISOString().slice(0,10);
+const uid=()=>Math.random().toString(36).slice(2,8).toUpperCase();
+const getP=id=>DB.patients.find(p=>p.id===id)||{name:'Unknown',phone:'—',id:'—'};
+function billStatus(b){const bal=(b.total-b.discount)-b.paid;if(bal<=0)return'paid';if(b.paid>0)return'partial';return'due';}
+function statusBadge(b){const s=billStatus(b);return{paid:'<span class="badge badge-green">✓ Paid</span>',partial:'<span class="badge badge-amber">◑ Partial</span>',due:'<span class="badge badge-red">✗ Unpaid</span>'}[s];}
+
+function showPage(id,btn){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  document.getElementById('page-'+id).classList.add('active');
+  if(btn)btn.classList.add('active');
+  if(id==='dashboard')renderDashboard();
+  if(id==='patients')renderPatients('');
+  if(id==='bills')renderBills('');
+  if(id==='report'){document.getElementById('report-date').value=today();renderReport();}
+}
+function openModal(id){
+  if(id==='modal-visit'){populatePtSel();document.getElementById('v-date').value=today();clearVisitForm();}
+  document.getElementById(id).classList.add('open');
+}
+function closeModal(id){document.getElementById(id).classList.remove('open');}
+
+// PATIENT
+function savePatient(){
+  const name=document.getElementById('p-name').value.trim();
+  const phone=document.getElementById('p-phone').value.trim();
+  if(!name||!phone){alert('Name and phone are required.');return;}
+  const pts=DB.patients;
+  pts.push({id:'P-'+uid(),name,phone,
+    age:document.getElementById('p-age').value,
+    gender:document.getElementById('p-gender').value,
+    dob:document.getElementById('p-dob').value,
+    blood:document.getElementById('p-blood').value,
+    address:document.getElementById('p-address').value,
+    email:document.getElementById('p-email').value,
+    emergency:document.getElementById('p-emergency').value,
+    allergies:document.getElementById('p-allergies').value,
+    history:document.getElementById('p-history').value,
+    medications:document.getElementById('p-medications').value,
+    lastvisit:document.getElementById('p-lastvisit').value,
+    notes:document.getElementById('p-notes').value,
+    created:today()
+  });
+  DB.patients=pts;
+  closeModal('modal-patient');
+  ['p-name','p-phone','p-age','p-address','p-email','p-emergency','p-allergies','p-history','p-medications','p-notes'].forEach(i=>document.getElementById(i).value='');
+  ['p-gender','p-blood'].forEach(i=>document.getElementById(i).value='');
+  ['p-dob','p-lastvisit'].forEach(i=>document.getElementById(i).value='');
+  renderPatients('');renderDashboard();
+}
+function renderPatients(filter){
+  const pts=DB.patients.filter(p=>!filter||p.name.toLowerCase().includes(filter.toLowerCase())||p.phone.includes(filter)||p.id.toLowerCase().includes(filter.toLowerCase()));
+  const tbody=document.getElementById('patients-body');
+  if(!pts.length){tbody.innerHTML=`<tr><td colspan="7"><div class="empty"><p>No patients found.</p></div></td></tr>`;return;}
+  tbody.innerHTML=pts.map(p=>{
+    const visits=DB.bills.filter(b=>b.patientId===p.id).length;
+    return`<tr>
+      <td><code style="font-size:11px;background:#f5f5f4;padding:2px 6px;border-radius:4px">${p.id}</code></td>
+      <td><strong>${p.name}</strong>${p.email?`<br><span style="font-size:11px;color:var(--text3)">${p.email}</span>`:''}</td>
+      <td>${p.phone}</td>
+      <td>${p.age||'—'}${p.gender?' / '+p.gender:''}</td>
+      <td>${p.blood?`<span class="badge badge-blue">${p.blood}</span>`:'—'}</td>
+      <td><span class="badge badge-green">${visits}</span></td>
+      <td><button class="btn btn-outline btn-sm" onclick="viewPatient('${p.id}')">View</button></td>
+    </tr>`;
+  }).join('');
+}
+function viewPatient(id){
+  const p=DB.patients.find(x=>x.id===id);
+  const bills=DB.bills.filter(b=>b.patientId===id);
+  document.getElementById('pv-title').textContent=p.name;
+  document.getElementById('pv-content').innerHTML=`
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px 24px;font-size:13.5px;margin-bottom:20px;padding:16px;background:var(--teal-xlight);border-radius:10px">
+      <div><span style="color:var(--text3);font-size:11px;font-weight:700;text-transform:uppercase">Patient ID</span><br><code style="font-size:12px">${p.id}</code></div>
+      <div><span style="color:var(--text3);font-size:11px;font-weight:700;text-transform:uppercase">Registered</span><br>${p.created}</div>
+      <div><span style="color:var(--text3);font-size:11px;font-weight:700;text-transform:uppercase">Phone</span><br>${p.phone}</div>
+      <div><span style="color:var(--text3);font-size:11px;font-weight:700;text-transform:uppercase">Email</span><br>${p.email||'—'}</div>
+      <div><span style="color:var(--text3);font-size:11px;font-weight:700;text-transform:uppercase">Age / Gender</span><br>${p.age||'—'}${p.gender?' / '+p.gender:''}</div>
+      <div><span style="color:var(--text3);font-size:11px;font-weight:700;text-transform:uppercase">Blood Group</span><br>${p.blood?`<span class="badge badge-blue">${p.blood}</span>`:'—'}</div>
+      <div style="grid-column:1/-1"><span style="color:var(--text3);font-size:11px;font-weight:700;text-transform:uppercase">Address</span><br>${p.address||'—'}</div>
+      <div><span style="color:var(--text3);font-size:11px;font-weight:700;text-transform:uppercase">Emergency</span><br>${p.emergency||'—'}</div>
+      <div><span style="color:var(--text3);font-size:11px;font-weight:700;text-transform:uppercase">Allergies</span><br>${p.allergies||'None'}</div>
+      <div style="grid-column:1/-1"><span style="color:var(--text3);font-size:11px;font-weight:700;text-transform:uppercase">Medical History</span><br>${p.history||'—'}</div>
+      <div style="grid-column:1/-1"><span style="color:var(--text3);font-size:11px;font-weight:700;text-transform:uppercase">Medications</span><br>${p.medications||'—'}</div>
+    </div>
+    <div class="section-title">Bill History (${bills.length} visit${bills.length!==1?'s':''})</div>
+    ${bills.length?`<table style="width:100%;border-collapse:collapse;font-size:13px">
+      <thead><tr>${['Bill #','Date','Total','Status',''].map(h=>`<th style="text-align:left;padding:8px;border-bottom:1px solid var(--border);font-size:11px;color:var(--text3)">${h}</th>`).join('')}</tr></thead>
+      <tbody>${bills.map(b=>`<tr>
+        <td style="padding:8px">${b.billNo}</td>
+        <td style="padding:8px">${b.date}</td>
+        <td style="padding:8px;font-weight:600">${fmt(b.total-b.discount)}</td>
+        <td style="padding:8px">${statusBadge(b)}</td>
+        <td style="padding:8px"><button class="btn btn-outline btn-sm" onclick="closeModal('modal-patient-view');viewBill('${b.id}')">View</button></td>
+      </tr>`).join('')}</tbody></table>`
+    :'<p style="color:var(--text3);font-size:14px">No visits yet.</p>'}`;
+  openModal('modal-patient-view');
+}
+
+// VISIT
+function populatePtSel(){
+  const sel=document.getElementById('v-patient');
+  sel.innerHTML='<option value="">— Select Patient —</option>';
+  DB.patients.forEach(p=>sel.innerHTML+=`<option value="${p.id}">${p.name} · ${p.phone}</option>`);
+}
+function clearVisitForm(){
+  currentTreatments=[];renderTreatmentItems();
+  ['v-doctor','v-complaint','v-notes','v-paid','v-discount','v-ref'].forEach(i=>document.getElementById(i).value='');
+  document.getElementById('v-patient').value='';
+  document.getElementById('v-qty').value=1;
+  updateBillPreview();
+}
+document.getElementById('v-treatment-select').addEventListener('change',function(){
+  document.getElementById('custom-treatment-row').style.display=this.value==='custom'?'flex':'none';
+});
+function addTreatment(){
+  const sel=document.getElementById('v-treatment-select');
+  const qty=parseInt(document.getElementById('v-qty').value)||1;
+  if(sel.value==='custom'){
+    const name=document.getElementById('v-custom-name').value.trim();
+    const price=parseFloat(document.getElementById('v-custom-price').value)||0;
+    if(!name){alert('Enter treatment name.');return;}
+    currentTreatments.push({name,price,qty});
+    document.getElementById('v-custom-name').value='';
+    document.getElementById('v-custom-price').value='';
+  }else if(sel.value){
+    const[name,price]=sel.value.split('|');
+    currentTreatments.push({name,price:parseFloat(price),qty});
+  }else{alert('Select a treatment.');return;}
+  document.getElementById('v-qty').value=1;
+  renderTreatmentItems();updateBillPreview();
+}
+function removeTreatment(i){currentTreatments.splice(i,1);renderTreatmentItems();updateBillPreview();}
+function updateQty(i,v){currentTreatments[i].qty=parseInt(v)||1;updateBillPreview();}
+function renderTreatmentItems(){
+  const el=document.getElementById('v-treatment-items');
+  if(!currentTreatments.length){el.innerHTML='<div style="text-align:center;padding:14px;color:var(--text3);font-size:13px;border:1.5px dashed var(--border);border-radius:8px">No treatments added yet</div>';return;}
+  el.innerHTML=currentTreatments.map((t,i)=>`
+    <div class="treatment-item">
+      <span class="t-name">${t.name}</span>
+      <input class="t-qty" type="number" value="${t.qty}" min="1" onchange="updateQty(${i},this.value)"/>
+      <span class="t-price">${fmt(t.price*t.qty)}</span>
+      <button class="remove-btn" onclick="removeTreatment(${i})">×</button>
+    </div>`).join('');
+}
+function updateBillPreview(){
+  const sub=currentTreatments.reduce((s,t)=>s+(t.price*t.qty),0);
+  const disc=parseFloat(document.getElementById('v-discount').value)||0;
+  const total=Math.max(0,sub-disc);
+  const paid=parseFloat(document.getElementById('v-paid').value)||0;
+  const bal=Math.max(0,total-paid);
+  document.getElementById('v-subtotal').textContent=fmt(sub);
+  document.getElementById('vs-sub').textContent=fmt(sub);
+  document.getElementById('vs-disc').textContent='— '+fmt(disc);
+  document.getElementById('vs-total').textContent=fmt(total);
+  document.getElementById('vs-paid').textContent=fmt(paid);
+  document.getElementById('vs-bal').textContent=fmt(bal);
+}
+function saveBill(){
+  const patId=document.getElementById('v-patient').value;
+  if(!patId){alert('Select a patient.');return;}
+  if(!currentTreatments.length){alert('Add at least one treatment.');return;}
+  const sub=currentTreatments.reduce((s,t)=>s+(t.price*t.qty),0);
+  const disc=parseFloat(document.getElementById('v-discount').value)||0;
+  const paid=parseFloat(document.getElementById('v-paid').value)||0;
+  const mode=document.getElementById('v-payment-mode').value;
+  const ref=document.getElementById('v-ref').value;
+  const bills=DB.bills;
+  const bill={
+    id:'B-'+uid(),billNo:'BS-'+String(bills.length+1).padStart(4,'0'),
+    patientId:patId,doctor:document.getElementById('v-doctor').value,
+    date:document.getElementById('v-date').value||today(),
+    complaint:document.getElementById('v-complaint').value,
+    notes:document.getElementById('v-notes').value,
+    treatments:[...currentTreatments],
+    total:sub,discount:disc,paid,paymentMode:mode,ref,
+    payments:paid>0?[{mode,amount:paid,ref,date:today()}]:[]
+  };
+  bills.push(bill);DB.bills=bills;
+  closeModal('modal-visit');clearVisitForm();
+  renderDashboard();renderBills('');
+  setTimeout(()=>viewBill(bill.id),250);
+}
+
+// BILLS TABLE
+function renderBills(filter){
+  const list=[...DB.bills].reverse().filter(b=>!filter||
+    b.billNo.toLowerCase().includes(filter.toLowerCase())||
+    getP(b.patientId).name.toLowerCase().includes(filter.toLowerCase()));
+  const tbody=document.getElementById('bills-body');
+  if(!list.length){tbody.innerHTML=`<tr><td colspan="10"><div class="empty"><p>No bills yet.</p></div></td></tr>`;return;}
+  tbody.innerHTML=list.map(b=>{
+    const p=getP(b.patientId);const net=b.total-b.discount;const bal=Math.max(0,net-b.paid);
+    return`<tr>
+      <td><strong>${b.billNo}</strong></td>
+      <td>${p.name}<br><span style="font-size:11px;color:var(--text3)">${p.phone}</span></td>
+      <td style="font-size:11.5px;color:var(--text3);max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${b.treatments.map(t=>t.name).join(', ')}</td>
+      <td>${fmt(net)}</td>
+      <td style="color:var(--green)">${fmt(b.paid)}</td>
+      <td style="color:${bal>0?'var(--red)':'var(--text3)'};font-weight:${bal>0?600:400}">${fmt(bal)}</td>
+      <td style="font-size:12px">${b.paymentMode||'—'}</td>
+      <td>${statusBadge(b)}</td>
+      <td>${b.date}</td>
+      <td><div style="display:flex;gap:5px">
+        <button class="btn btn-outline btn-sm" onclick="viewBill('${b.id}')">🧾</button>
+        ${bal>0?`<button class="btn btn-primary btn-sm" onclick="openPayment('${b.id}')">Pay</button>`:''}
+      </div></td>
+    </tr>`;
+  }).join('');
+}
+
+// CLINIC RECEIPT
+function viewBill(id){
+  const b=DB.bills.find(x=>x.id===id);
+  const p=getP(b.patientId);
+  const net=b.total-b.discount;
+  const bal=Math.max(0,net-b.paid);
+  const st=billStatus(b);
+  const stampLabel={paid:'PAID',partial:'PARTIAL',due:'UNPAID'}[st];
+  document.getElementById('bill-view-content').innerHTML=`
+  <div class="receipt" id="printable-receipt">
+    <div class="receipt-status-stamp ${st}">${stampLabel}</div>
+    <div class="receipt-inner">
+      <div class="receipt-clinic-name">🦷 Bright Smile Dental Clinic</div>
+      <div class="receipt-clinic-sub">Plot No. 42, Jubilee Hills, Hyderabad — 500033, Telangana</div>
+      <div class="receipt-clinic-contact">📞 +91 98765 43210 &nbsp;|&nbsp; ✉ info@brightsmile.in &nbsp;|&nbsp; 🌐 www.brightsmile.in</div>
+      <div class="receipt-clinic-contact" style="font-size:10.5px">Reg. No: MCI/2019/HYD/4821 &nbsp;|&nbsp; GSTIN: 36AABCB1234F1ZK</div>
+      <hr class="receipt-divider-double"/>
+      <div class="receipt-meta">
+        <div class="receipt-meta-left">
+          <strong>TAX INVOICE</strong>
+          Bill No: <strong>${b.billNo}</strong><br>
+          Date: <strong>${b.date}</strong><br>
+          ${b.doctor?`Doctor: <strong>${b.doctor}</strong>`:''}
+        </div>
+        <div class="receipt-meta-right">
+          <strong>ORIGINAL COPY</strong>
+          ${b.complaint?`Complaint:<br><strong>${b.complaint}</strong>`:''}
+        </div>
+      </div>
+      <hr class="receipt-divider"/>
+      <div class="receipt-patient-box">
+        <div class="label">Patient Details</div>
+        <div class="receipt-patient-grid">
+          <div><span>Name: </span><strong>${p.name}</strong></div>
+          <div><span>Patient ID: </span><strong>${p.id}</strong></div>
+          <div><span>Phone: </span><strong>${p.phone}</strong></div>
+          <div><span>Age/Gender: </span><strong>${p.age||'—'}${p.gender?' / '+p.gender:''}</strong></div>
+          ${p.blood?`<div><span>Blood Group: </span><strong>${p.blood}</strong></div>`:'<div></div>'}
+          ${p.address?`<div style="grid-column:1/-1"><span>Address: </span><strong>${p.address}</strong></div>`:''}
+        </div>
+      </div>
+      <div class="receipt-items-header">
+        <span style="flex:1">Treatment / Service</span>
+        <span style="width:36px;text-align:center">Qty</span>
+        <span style="width:80px;text-align:right">Unit</span>
+        <span style="width:90px;text-align:right">Amount</span>
+      </div>
+      ${b.treatments.map(t=>`
+        <div class="receipt-item">
+          <span class="receipt-item-name">${t.name}</span>
+          <span class="receipt-item-qty">${t.qty||1}</span>
+          <span class="receipt-item-unit">${fmt(t.price)}</span>
+          <span class="receipt-item-price">${fmt(t.price*(t.qty||1))}</span>
+        </div>`).join('')}
+      <hr class="receipt-divider-solid"/>
+      <div class="receipt-subtotals">
+        <div class="receipt-subtotal-row"><span>Subtotal</span><span>${fmt(b.total)}</span></div>
+        ${b.discount>0?`<div class="receipt-subtotal-row"><span>Discount</span><span style="color:var(--amber)">— ${fmt(b.discount)}</span></div>`:''}
+      </div>
+      <div class="receipt-grand-total"><span>GRAND TOTAL</span><span>${fmt(net)}</span></div>
+      <hr class="receipt-divider"/>
+      <div class="receipt-subtotals">
+        <div class="receipt-payment-row"><span>Payment Mode</span><strong>${b.paymentMode||'—'}</strong></div>
+        ${b.ref?`<div class="receipt-payment-row"><span>Reference No.</span><strong>${b.ref}</strong></div>`:''}
+        ${b.payments.map(pay=>`<div class="receipt-payment-row"><span>Payment on ${pay.date} (${pay.mode})</span><span style="color:var(--green);font-weight:600">${fmt(pay.amount)}</span></div>`).join('')}
+      </div>
+      <div class="receipt-balance ${st}">
+        <span>${bal<=0?'✓ Fully Paid':'Balance Due'}</span>
+        <span>${fmt(bal<=0?net:bal)}</span>
+      </div>
+      <div class="receipt-footer">
+        Thank you for choosing Bright Smile Dental Clinic! 😊<br>
+        Please visit again for your next scheduled check-up.<br>
+        This is a computer-generated invoice. No signature required.<br>
+        Queries: +91 98765 43210 &nbsp;|&nbsp; info@brightsmile.in
+      </div>
+    </div>
+  </div>`;
+  openModal('modal-bill-view');
+}
+
+function printBill(){
+  const content=document.getElementById('printable-receipt').outerHTML;
+  const win=window.open('','_blank','width=640,height=900');
+  win.document.write(`<!DOCTYPE html><html><head><title>Bill - Bright Smile</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet"/>
+  <style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:'DM Sans',sans-serif;background:#eee;display:flex;justify-content:center;padding:24px;min-height:100vh}
+  .receipt{width:480px;background:#fff;border:2px solid #0f766e;border-radius:4px;box-shadow:4px 4px 0 #b2e8e2;position:relative;overflow:hidden}
+  .receipt::before{content:'';position:absolute;top:0;left:0;right:0;height:6px;background:repeating-linear-gradient(90deg,#0d9488 0,#0d9488 8px,transparent 8px,transparent 14px)}
+  .receipt::after{content:'BRIGHT SMILE';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%) rotate(-30deg);font-family:'Playfair Display',serif;font-size:52px;font-weight:700;color:rgba(13,148,136,.04);letter-spacing:.1em;pointer-events:none;white-space:nowrap}
+  .receipt-inner{padding:28px 28px 22px}
+  .receipt-clinic-name{font-family:'Playfair Display',serif;font-size:22px;font-weight:700;color:#0f766e;text-align:center;margin-bottom:3px}
+  .receipt-clinic-sub,.receipt-clinic-contact{text-align:center;font-size:11px;color:#57534e;margin-bottom:2px}
+  .receipt-divider{border:none;border-top:1px dashed #b2e8e2;margin:12px 0}
+  .receipt-divider-solid{border:none;border-top:2px solid #0f766e;margin:14px 0}
+  .receipt-divider-double{border:none;border-top:3px double #0f766e;margin:14px 0}
+  .receipt-meta{display:flex;justify-content:space-between;margin-bottom:12px;font-size:12px;color:#57534e}
+  .receipt-meta strong{color:#1c1917;display:block;font-size:13px}
+  .receipt-meta-right{text-align:right}
+  .receipt-patient-box{background:#f0fdfa;border:1px solid #b2e8e2;border-radius:6px;padding:11px 14px;margin-bottom:14px}
+  .receipt-patient-box .label{font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:#0f766e;margin-bottom:6px}
+  .receipt-patient-grid{display:grid;grid-template-columns:1fr 1fr;gap:4px 16px;font-size:12.5px}
+  .receipt-patient-grid span{color:#57534e}.receipt-patient-grid strong{color:#1c1917}
+  .receipt-items-header{display:flex;font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:#a8a29e;padding:0 0 6px;border-bottom:1px solid #e2e8e7}
+  .receipt-item{display:flex;padding:7px 0;border-bottom:1px dashed #e2e8e7;font-size:13px}
+  .receipt-item:last-child{border-bottom:none}
+  .receipt-item-name{flex:1;font-weight:500}
+  .receipt-item-qty{width:36px;text-align:center;color:#a8a29e;font-size:12px}
+  .receipt-item-unit{width:80px;text-align:right;color:#a8a29e;font-size:12px}
+  .receipt-item-price{width:90px;text-align:right;font-weight:600}
+  .receipt-subtotals{font-size:13px}
+  .receipt-subtotal-row,.receipt-payment-row{display:flex;justify-content:space-between;padding:5px 0;color:#57534e;font-size:13px}
+  .receipt-grand-total{display:flex;justify-content:space-between;padding:10px 16px;margin-top:10px;background:#0f766e;border-radius:6px;color:#fff;font-size:17px;font-weight:700}
+  .receipt-balance{display:flex;justify-content:space-between;padding:9px 16px;margin-top:8px;border-radius:6px;font-size:14px;font-weight:700}
+  .receipt-balance.paid{background:#dcfce7;color:#15803d}
+  .receipt-balance.due{background:#fee2e2;color:#b91c1c}
+  .receipt-balance.partial{background:#fef9c3;color:#92400e}
+  .receipt-status-stamp{position:absolute;top:22px;right:18px;border:3px solid currentColor;border-radius:4px;padding:4px 10px;font-size:13px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;transform:rotate(8deg);opacity:.6}
+  .receipt-status-stamp.paid{color:#15803d}.receipt-status-stamp.due{color:#b91c1c}.receipt-status-stamp.partial{color:#92400e}
+  .receipt-footer{text-align:center;font-size:11px;color:#a8a29e;margin-top:14px;padding-top:10px;border-top:1px dashed #b2e8e2;line-height:1.8}
+  @media print{body{background:#fff;padding:0}.receipt{box-shadow:none}}
+  </style></head><body>${content}
+  <script>window.onload=function(){window.print()}<\/script></body></html>`);
+}
+
+// PAYMENT
+function openPayment(billId){
+  currentPayBillId=billId;
+  const b=DB.bills.find(x=>x.id===billId);
+  const p=getP(b.patientId);
+  const net=b.total-b.discount;const bal=Math.max(0,net-b.paid);
+  document.getElementById('payment-bill-info').innerHTML=`
+    <div style="font-weight:600;margin-bottom:6px">${b.billNo} — ${p.name}</div>
+    <div style="display:flex;gap:24px;font-size:13px">
+      <span>Total: <strong>${fmt(net)}</strong></span>
+      <span style="color:var(--green)">Paid: <strong>${fmt(b.paid)}</strong></span>
+      <span style="color:var(--red)">Balance: <strong>${fmt(bal)}</strong></span>
+    </div>`;
+  ['pay-amount','pay-ref','pay-remarks'].forEach(i=>document.getElementById(i).value='');
+  openModal('modal-payment');
+}
+function savePayment(){
+  const amount=parseFloat(document.getElementById('pay-amount').value)||0;
+  if(!amount){alert('Enter an amount.');return;}
+  const bills=DB.bills;
+  const b=bills.find(x=>x.id===currentPayBillId);
+  const net=b.total-b.discount;
+  b.paid=Math.min(net,b.paid+amount);
+  b.paymentMode=document.getElementById('pay-mode').value;
+  b.payments.push({mode:document.getElementById('pay-mode').value,amount,ref:document.getElementById('pay-ref').value,remarks:document.getElementById('pay-remarks').value,date:today()});
+  DB.bills=bills;
+  closeModal('modal-payment');
+  renderBills('');renderDashboard();
+  setTimeout(()=>viewBill(currentPayBillId),250);
+}
+
+// DASHBOARD
+function renderDashboard(){
+  const d=today();
+  document.getElementById('today-date').textContent=new Date().toLocaleDateString('en-IN',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
+  const todayBills=DB.bills.filter(b=>b.date===d);
+  const collected=todayBills.reduce((s,b)=>s+b.paid,0);
+  const outstanding=DB.bills.reduce((s,b)=>s+Math.max(0,(b.total-b.discount)-b.paid),0);
+  document.getElementById('stat-collections').textContent=fmt(collected);
+  document.getElementById('stat-patients').textContent=new Set(todayBills.map(b=>b.patientId)).size;
+  document.getElementById('stat-bills').textContent=todayBills.length;
+  document.getElementById('stat-outstanding').textContent=fmt(outstanding);
+  const tbody=document.getElementById('dash-bills-body');
+  const recent=[...DB.bills].reverse().slice(0,10);
+  if(!recent.length){tbody.innerHTML=`<tr><td colspan="7"><div class="empty"><p>No bills yet — create a new visit to get started!</p></div></td></tr>`;return;}
+  tbody.innerHTML=recent.map(b=>`<tr>
+    <td><strong>${b.billNo}</strong></td>
+    <td>${getP(b.patientId).name}</td>
+    <td>${fmt(b.total-b.discount)}</td>
+    <td style="color:var(--green)">${fmt(b.paid)}</td>
+    <td>${statusBadge(b)}</td>
+    <td>${b.date}</td>
+    <td><button class="btn btn-outline btn-sm" onclick="viewBill('${b.id}')">🧾 View</button></td>
+  </tr>`).join('');
+}
+
+// REPORT
+function renderReport(){
+  const d=document.getElementById('report-date').value||today();
+  const bills=DB.bills.filter(b=>b.date===d);
+  const total=bills.reduce((s,b)=>s+(b.total-b.discount),0);
+  const collected=bills.reduce((s,b)=>s+b.paid,0);
+  const outstanding=bills.reduce((s,b)=>s+Math.max(0,(b.total-b.discount)-b.paid),0);
+  document.getElementById('report-stats').innerHTML=`
+    <div class="stat-card"><div class="stat-label">Total Billed</div><div class="stat-value">${fmt(total)}</div></div>
+    <div class="stat-card"><div class="stat-label">Collected</div><div class="stat-value teal">${fmt(collected)}</div></div>
+    <div class="stat-card"><div class="stat-label">Outstanding</div><div class="stat-value red">${fmt(outstanding)}</div></div>
+    <div class="stat-card"><div class="stat-label">Total Bills</div><div class="stat-value">${bills.length}</div></div>`;
+  const modes={'Cash':0,'UPI / GPay / PhonePe':0,'Debit Card':0,'Credit Card':0,'Net Banking':0,'Insurance':0,'Cheque':0};
+  const colors=['#0d9488','#7c3aed','#2563eb','#db2777','#ea580c','#16a34a','#ca8a04'];
+  bills.forEach(b=>b.payments.forEach(pay=>{if(pay.mode in modes)modes[pay.mode]+=pay.amount;}));
+  document.getElementById('report-breakdown').innerHTML=Object.entries(modes).map(([m,a],i)=>`
+    <div class="report-row"><span><span class="mode-dot" style="background:${colors[i]}"></span>${m}</span><strong>${fmt(a)}</strong></div>`).join('');
+  const paid=bills.filter(b=>(b.total-b.discount-b.paid)<=0).length;
+  const partial=bills.filter(b=>b.paid>0&&(b.total-b.discount-b.paid)>0).length;
+  const unpaid=bills.filter(b=>b.paid===0).length;
+  document.getElementById('report-status').innerHTML=`
+    <div class="report-row"><span><span class="badge badge-green">✓ Paid</span></span><strong>${paid}</strong></div>
+    <div class="report-row"><span><span class="badge badge-amber">◑ Partial</span></span><strong>${partial}</strong></div>
+    <div class="report-row"><span><span class="badge badge-red">✗ Unpaid</span></span><strong>${unpaid}</strong></div>`;
+  const tbody=document.getElementById('report-bills');
+  tbody.innerHTML=bills.length?bills.map(b=>{const net=b.total-b.discount;const bal=Math.max(0,net-b.paid);return`<tr>
+    <td>${b.billNo}</td><td>${getP(b.patientId).name}</td><td>${b.doctor||'—'}</td>
+    <td>${fmt(net)}</td><td style="color:var(--green)">${fmt(b.paid)}</td>
+    <td style="color:${bal>0?'var(--red)':'var(--text3)'}">${fmt(bal)}</td><td>${statusBadge(b)}</td>
+  </tr>`}).join(''):`<tr><td colspan="7"><div class="empty"><p>No bills for this date.</p></div></td></tr>`;
+}
+
+renderDashboard();
+</script>
+</body>
+</html>
